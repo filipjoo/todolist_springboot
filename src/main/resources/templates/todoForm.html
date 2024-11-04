@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>ToDo List</title>
+	<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<form th:action="@{/}" method="post" th:object=${todoData}> <!--/* th:object から *{プロパティ名}でプロパティ値を取得できる */-->
+		<table>
+			<tr>
+				<td>件名</td>
+				<td>
+					<input type="text" name="title" size="40"
+						th:value="*{title}" />　<!--/* th:value　は→と同じ　todoData.getTitle */-->
+					<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" th:errorclass="red"></div>
+					<!--/* th:object（todoData） に関連付けられたBindingResultを利用 */-->
+				</td>
+			</tr>
+			<tr>
+				<td>重要度</td>
+				<td>
+					<input type="radio" value="1" th:field="*{importance}" />高
+					　<!--/* th:field　は→と同じ　id="importance連番", name="importance", value=todoData.getImportance(※ただしここではvalue="1"が優先される) */-->
+					<input type="radio" value="0" th:field="*{importance}" />低
+					<div th:if="${#fields.hasErrors('importance')}" th:errors="*{importance}" th:errorclass="red"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>緊急度</td>
+				<td>
+					<select name="urgency">
+						<!--/* th:fieldには「option要素のvalue属性の値=*{プロパティ名}の値なら、selected属性を追加する」機能がある。初期値の設定に利用している。 */-->
+						<option value="-1" th:field="*{urgency}">選択してください</option>
+						<option value="1" th:field="*{urgency}">高</option>
+						<option value="0" th:field="*{urgency}">低</option>
+					</select>
+					<div th:if="${#fields.hasErrors('urgency')}" th:errors="*{urgency}" th:errorclass="red"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>期限</td>
+				<td>
+					<input type="type" name="deadline" th:field="*{deadline}" placeholder="yyyy-mm-dd" />
+					<div th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}" th:errorclass="red"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>チェック</td>
+				<td>
+					<input type="checkbox" value="Y" th:field="*{done}" />完了
+					<input type="hidden" name="!done" value="N" />　<!--/* 未チェック時はtodoData.doneに"N"が設定される。 */-->
+				</td>
+			</tr>
+		</table>
+		<div>
+			<button type="submit" th:formaction="@{/todo/create}">登録</button>
+			<button type="submit" th:formaction="@{/todo/cancel}">キャンセル</button>
+		</div>
+	</form>
+</body>
+
+</html>
